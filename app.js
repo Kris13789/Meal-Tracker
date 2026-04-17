@@ -10,7 +10,7 @@ let authCheckInProgress = false;
 
 // DOM elements
 const appHeader = document.querySelector('.app-header');
-const appTitle = document.getElementById('appTitle');
+const googleSignInBtn = document.getElementById('googleSignInBtn');
 const appContent = document.getElementById('appContent');
 const signOutBtn = document.getElementById('signOutBtn');
 const mealForm = document.getElementById('mealForm');
@@ -127,11 +127,15 @@ async function signInWithGoogle() {
     }
 }
 
-async function signOut() {
+async function signOut(options = {}) {
+    const { preserveAccessDeniedGate = false } = options;
     if (!isSupabaseConfigured()) {
         return;
     }
 
+    if (!preserveAccessDeniedGate) {
+        appHeader.classList.remove('access-denied');
+    }
     hideGlobalBanner();
     await supabaseClient.auth.signOut();
     setUnauthenticatedUI();
@@ -154,7 +158,8 @@ async function ensureAllowedUser() {
     }
 
     if (!data) {
-        await signOut();
+        appHeader.classList.add('access-denied');
+        await signOut({ preserveAccessDeniedGate: true });
         showMessage(
             'Please contact kristina.podolyako.mih@gmail.com to request access.',
             true,
@@ -164,6 +169,7 @@ async function ensureAllowedUser() {
         return false;
     }
 
+    appHeader.classList.remove('access-denied');
     isAllowedUser = true;
     return true;
 }
@@ -212,9 +218,9 @@ async function showMealsView() {
 }
 
 function initializeRouting() {
-    appTitle.addEventListener('click', async () => {
+    googleSignInBtn.addEventListener('click', () => {
         if (!currentSession) {
-            await signInWithGoogle();
+            signInWithGoogle();
         }
     });
     backToLoginBtn.addEventListener('click', () => {
