@@ -97,6 +97,19 @@ textarea:focus {
     border: 1px solid #ff4444;
 }
 
+.global-banner {
+    margin-bottom: 20px;
+}
+
+.global-banner .message {
+    margin-bottom: 0;
+}
+
+.global-banner-login {
+    display: none;
+    margin-top: 12px;
+}
+
 .save-btn {
     width: 100%;
     padding: 15px;

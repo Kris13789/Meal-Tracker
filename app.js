@@ -17,6 +17,11 @@ const mealForm = document.getElementById('mealForm');
 const mealDescription = document.getElementById('mealDescription');
 const saveButton = document.getElementById('saveButton');
 const messageDiv = document.getElementById('message');
+const globalBanner = document.getElementById('globalBanner');
+const globalMessageDiv = document.getElementById('globalMessage');
+const backToLoginBtn = document.getElementById('backToLoginBtn');
+
+let globalMessageTimeoutId = null;
 const homeView = document.getElementById('homeView');
 const mealsView = document.getElementById('mealsView');
 const viewMealsBtn = document.getElementById('viewMealsBtn');
@@ -53,7 +58,35 @@ function isSupabaseConfigured() {
     return supabaseClient !== null;
 }
 
-function showMessage(text, isError = false) {
+function hideGlobalBanner() {
+    if (globalMessageTimeoutId !== null) {
+        clearTimeout(globalMessageTimeoutId);
+        globalMessageTimeoutId = null;
+    }
+    globalBanner.style.display = 'none';
+    backToLoginBtn.style.display = 'none';
+}
+
+function showGlobalBanner(text, isError, options = {}) {
+    const { durationMs = 3000, showLoginButton = false } = options;
+    hideGlobalBanner();
+    globalMessageDiv.textContent = text;
+    globalMessageDiv.className = `message ${isError ? 'error' : 'success'}`;
+    globalMessageDiv.style.display = 'block';
+    globalBanner.style.display = 'block';
+    backToLoginBtn.style.display = showLoginButton ? 'block' : 'none';
+
+    if (durationMs > 0) {
+        globalMessageTimeoutId = setTimeout(hideGlobalBanner, durationMs);
+    }
+}
+
+function showMessage(text, isError = false, global = false, globalOptions = {}) {
+    if (global) {
+        showGlobalBanner(text, isError, globalOptions);
+        return;
+    }
+
     messageDiv.textContent = text;
     messageDiv.className = `message ${isError ? 'error' : 'success'}`;
     messageDiv.style.display = 'block';
@@ -99,6 +132,7 @@ async function signOut() {
         return;
     }
 
+    hideGlobalBanner();
     await supabaseClient.auth.signOut();
     setUnauthenticatedUI();
     showHomeView();
@@ -112,14 +146,21 @@ async function ensureAllowedUser() {
     const { data, error } = await supabaseClient.rpc('is_allowed_user');
     if (error) {
         console.error('Authorization check failed:', error);
-        alert('Could not validate access. Please try again.');
         await signOut();
+        showMessage('Could not validate access. Please try again.', true, true, {
+            durationMs: 15000
+        });
         return false;
     }
 
     if (!data) {
-        alert('Access denied. Your account is not authorized.');
         await signOut();
+        showMessage(
+            'Please contact kristina.podolyako.mih@gmail.com to request access.',
+            true,
+            true,
+            { durationMs: 0, showLoginButton: true }
+        );
         return false;
     }
 
@@ -175,6 +216,10 @@ function initializeRouting() {
         if (!currentSession) {
             await signInWithGoogle();
         }
+    });
+    backToLoginBtn.addEventListener('click', () => {
+        hideGlobalBanner();
+        signInWithGoogle();
     });
     signOutBtn.addEventListener('click', signOut);
     viewMealsBtn.addEventListener('click', showMealsView);
