@@ -9,10 +9,9 @@ let isAllowedUser = false;
 let authCheckInProgress = false;
 
 // DOM elements
+const appHeader = document.querySelector('.app-header');
 const appTitle = document.getElementById('appTitle');
 const appContent = document.getElementById('appContent');
-const authBar = document.getElementById('authBar');
-const userEmail = document.getElementById('userEmail');
 const signOutBtn = document.getElementById('signOutBtn');
 const mealForm = document.getElementById('mealForm');
 const mealDescription = document.getElementById('mealDescription');
@@ -66,8 +65,7 @@ function showMessage(text, isError = false) {
 
 function setUnauthenticatedUI() {
     appContent.style.display = 'none';
-    authBar.style.display = 'none';
-    userEmail.textContent = '';
+    appHeader.classList.remove('is-authenticated');
     currentSession = null;
     isAllowedUser = false;
     clearTableBody();
@@ -76,8 +74,7 @@ function setUnauthenticatedUI() {
 function setAuthenticatedUI(session) {
     currentSession = session;
     appContent.style.display = 'block';
-    authBar.style.display = 'flex';
-    userEmail.textContent = session.user.email || '';
+    appHeader.classList.add('is-authenticated');
 }
 
 async function signInWithGoogle() {

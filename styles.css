@@ -19,13 +19,13 @@ body {
     max-width: 400px;
 }
 
-header {
+.app-header {
     color: #ffffff;
     padding: 30px 20px;
     text-align: center;
 }
 
-header h1 {
+.app-header h1 {
     font-size: 28px;
     font-weight: 500;
 }
@@ -34,24 +34,12 @@ header h1 {
     cursor: pointer;
 }
 
-.auth-bar {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.user-email {
-    color: #cccccc;
-    font-size: 14px;
-}
-
 .auth-link-btn {
     margin-top: 0;
     width: auto;
     padding: 0;
     font-size: 14px;
+    text-align: right;
 }
 
 main {
@@ -153,6 +141,32 @@ textarea:focus {
 
 .link-btn:hover {
     opacity: 0.8;
+}
+
+/* After .link-btn so width/margin/text-align overrides apply (same specificity, source order). */
+.header-sign-out {
+    display: none;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 1.25rem);
+    right: calc(env(safe-area-inset-right, 0px) + 1.25rem);
+    left: auto;
+    z-index: 10;
+    width: max-content;
+    max-width: calc(100vw - 3rem);
+    margin: 0;
+    padding: 0.75rem 1rem;
+    text-align: end;
+    text-decoration: none;
+}
+
+.header-sign-out-icon {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.app-header.is-authenticated .header-sign-out {
+    display: block;
 }
 
 .view {
