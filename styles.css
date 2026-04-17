@@ -1,0 +1,276 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #0a0a0a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+header {
+    color: #ffffff;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.app-title {
+    cursor: pointer;
+}
+
+.auth-bar {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.user-email {
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.auth-link-btn {
+    margin-top: 0;
+    width: auto;
+    padding: 0;
+    font-size: 14px;
+}
+
+main {
+    padding: 30px 20px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #cccccc;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    background: #0a0a0a;
+    color: #ffffff;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #00ff88;
+}
+
+.message {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+}
+
+.message.success {
+    background-color: #0a2e1a;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+}
+
+.message.error {
+    background-color: #2e0a0a;
+    color: #ff4444;
+    border: 1px solid #ff4444;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 15px;
+    background: #00ff88;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.save-btn:hover {
+    opacity: 0.9;
+}
+
+.save-btn:active {
+    opacity: 0.8;
+}
+
+.save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.link-btn {
+    background: transparent;
+    color: #00ff88;
+    border: none;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: opacity 0.2s ease;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.link-btn:hover {
+    opacity: 0.8;
+}
+
+.view {
+    width: 100%;
+}
+
+.meals-header {
+    margin-bottom: 25px;
+}
+
+.meals-header h2 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 15px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ffffff;
+}
+
+thead {
+    border-bottom: 1px solid #1a1a1a;
+}
+
+th {
+    padding: 12px 8px;
+    text-align: left;
+    color: #cccccc;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 14px;
+}
+
+/* Prevent date and time columns from wrapping */
+td:first-child,
+td:nth-child(2) {
+    white-space: nowrap;
+}
+
+/* Set minimum widths for date and time columns */
+td:first-child {
+    min-width: 100px;
+}
+
+td:nth-child(2) {
+    min-width: 60px;
+}
+
+tbody tr:hover {
+    background-color: #0f0f0f;
+}
+
+.loading-indicator,
+.no-more-meals {
+    text-align: center;
+    padding: 20px;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.no-more-meals {
+    color: #666666;
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+    .container {
+        max-width: 800px;
+    }
+    
+    table {
+        font-size: 16px;
+    }
+    
+    th, td {
+        padding: 15px 12px;
+    }
+    
+    th {
+        font-size: 12px;
+    }
+    
+    .meals-header h2 {
+        font-size: 28px;
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+    table {
+        font-size: 13px;
+    }
+    
+    th, td {
+        padding: 10px 6px;
+    }
+    
+    th {
+        font-size: 11px;
+    }
+    
+    /* Make table scrollable on mobile */
+    .table-container {
+        -webkit-overflow-scrolling: touch;
+    }
+}
