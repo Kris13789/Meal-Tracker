@@ -25,6 +25,24 @@ body {
     text-align: center;
 }
 
+.login-brand-mark {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.login-chef-icon {
+    width: 72px;
+    height: 72px;
+    display: block;
+    color: #00ff88;
+}
+
+.app-header.is-authenticated .login-brand-mark,
+.app-header.access-denied .login-brand-mark {
+    display: none;
+}
+
 .app-header h1 {
     font-size: 28px;
     font-weight: 500;
