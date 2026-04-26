@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+
+# Local env/secrets
+.env
+.env.*
+!.env.example
+
+# Cursor/editor local artifacts
+.cursor/
+
+# Logs
+*.log
