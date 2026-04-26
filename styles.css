@@ -406,10 +406,23 @@ textarea:focus {
     color: #d6d6d6;
     font-size: 14px;
     line-height: 1.4;
+    list-style: none;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #1d1d1d;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .analysis-section li:last-child {
     margin-bottom: 0;
+}
+
+.analysis-pattern-line {
+    margin: 0;
+}
+
+.analysis-pattern-line + .analysis-pattern-line {
+    margin-top: 6px;
 }
 
 .analysis-section-healthy h4 {
@@ -420,10 +433,6 @@ textarea:focus {
     color: #ff7a7a;
 }
 
-.analysis-section-improve h4 {
-    color: #ffd166;
-}
-
 .analysis-section-healthy {
     background: rgba(0, 255, 136, 0.07);
     border-color: rgba(0, 255, 136, 0.28);
@@ -432,11 +441,6 @@ textarea:focus {
 .analysis-section-unhealthy {
     background: rgba(255, 68, 68, 0.08);
     border-color: rgba(255, 68, 68, 0.3);
-}
-
-.analysis-section-improve {
-    background: rgba(255, 209, 102, 0.1);
-    border-color: rgba(255, 209, 102, 0.34);
 }
 
 @keyframes analysisSpin {

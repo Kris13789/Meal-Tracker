@@ -458,13 +458,36 @@ function createAnalysisSection(title, items, className) {
     section.appendChild(sectionTitle);
 
     const list = document.createElement('ul');
-    const normalizedItems = Array.isArray(items) && items.length > 0
-        ? items
-        : ['No insights available yet.'];
+    const normalizedItems = Array.isArray(items) && items.length > 0 ? items : [];
+
+    if (normalizedItems.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No insights available yet.';
+        list.appendChild(li);
+        section.appendChild(list);
+        return section;
+    }
 
     normalizedItems.forEach((item) => {
         const li = document.createElement('li');
-        li.textContent = item;
+
+        const tendencyLine = document.createElement('p');
+        tendencyLine.className = 'analysis-pattern-line';
+        tendencyLine.textContent = `Tendency: ${item.tendency}`;
+
+        const consequenceLine = document.createElement('p');
+        consequenceLine.className = 'analysis-pattern-line';
+        consequenceLine.textContent = `Consequence: ${item.consequence}`;
+
+        const actionLine = document.createElement('p');
+        actionLine.className = 'analysis-pattern-line';
+        actionLine.textContent = item.keep_it_up
+            ? `Keep it up: ${item.keep_it_up}`
+            : `Solution: ${item.solution}`;
+
+        li.appendChild(tendencyLine);
+        li.appendChild(consequenceLine);
+        li.appendChild(actionLine);
         list.appendChild(li);
     });
 
@@ -482,7 +505,6 @@ function renderAnalysisResults(data) {
 
     analysisModalBody.appendChild(createAnalysisSection('Healthy patterns', data.healthy_patterns, 'analysis-section-healthy'));
     analysisModalBody.appendChild(createAnalysisSection('Unhealthy patterns', data.unhealthy_patterns, 'analysis-section-unhealthy'));
-    analysisModalBody.appendChild(createAnalysisSection('What to improve', data.what_to_improve, 'analysis-section-improve'));
 }
 
 function validateAnalysisPayload(payload) {
@@ -494,12 +516,26 @@ function validateAnalysisPayload(payload) {
         throw new Error('Analysis response is incomplete.');
     }
 
+    const normalizePatternItems = (items, requiredThirdField) => {
+        if (!Array.isArray(items)) {
+            return [];
+        }
+
+        return items
+            .filter((item) => item && typeof item === 'object')
+            .map((item) => ({
+                tendency: typeof item.tendency === 'string' ? item.tendency.trim() : '',
+                consequence: typeof item.consequence === 'string' ? item.consequence.trim() : '',
+                [requiredThirdField]: typeof item[requiredThirdField] === 'string' ? item[requiredThirdField].trim() : ''
+            }))
+            .filter((item) => item.tendency && item.consequence && item[requiredThirdField]);
+    };
+
     return {
         meals_analyzed: payload.meals_analyzed,
         period: payload.period,
-        healthy_patterns: Array.isArray(payload.healthy_patterns) ? payload.healthy_patterns : [],
-        unhealthy_patterns: Array.isArray(payload.unhealthy_patterns) ? payload.unhealthy_patterns : [],
-        what_to_improve: Array.isArray(payload.what_to_improve) ? payload.what_to_improve : []
+        healthy_patterns: normalizePatternItems(payload.healthy_patterns, 'keep_it_up'),
+        unhealthy_patterns: normalizePatternItems(payload.unhealthy_patterns, 'solution')
     };
 }
 
