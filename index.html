@@ -71,6 +71,7 @@
                 <div class="meals-header">
                     <button id="backBtn" class="link-btn">← Back</button>
                     <h2>My Logged Meals</h2>
+                    <button id="analyzeMealsBtn" type="button" class="analyze-btn">Analyze Meals</button>
                 </div>
                 
                 <div id="mealsTableContainer" class="table-container">
@@ -95,6 +96,29 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <div id="analysisModal" class="analysis-modal" style="display: none;" aria-hidden="true">
+        <div id="analysisModalBackdrop" class="analysis-modal-backdrop"></div>
+        <section
+            class="analysis-modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="analysisModalTitle"
+        >
+            <header class="analysis-modal-header">
+                <h3 id="analysisModalTitle">Meal Analysis</h3>
+                <button
+                    id="analysisModalCloseBtn"
+                    type="button"
+                    class="analysis-modal-close-btn"
+                    aria-label="Close meal analysis"
+                >
+                    ×
+                </button>
+            </header>
+            <div id="analysisModalBody" class="analysis-modal-body"></div>
+        </section>
     </div>
     
     <!-- Supabase JS Client -->

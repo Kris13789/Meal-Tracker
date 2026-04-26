@@ -244,12 +244,207 @@ textarea:focus {
     margin-bottom: 25px;
 }
 
+.analyze-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 11px 14px;
+    border-radius: 6px;
+    border: 1px solid #00ff88;
+    background: #0a0a0a;
+    color: #00ff88;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.analyze-btn:hover {
+    background: rgba(0, 255, 136, 0.08);
+}
+
+.analyze-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .meals-header h2 {
     color: #ffffff;
     font-size: 24px;
     font-weight: 500;
     margin-top: 15px;
 }
+
+.analysis-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.analysis-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.analysis-modal-content {
+    position: relative;
+    width: min(100%, 560px);
+    max-height: min(85vh, 720px);
+    overflow-y: auto;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    background: #101010;
+    color: #ffffff;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.analysis-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.analysis-modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.analysis-modal-close-btn {
+    border: none;
+    background: transparent;
+    color: #cccccc;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+}
+
+.analysis-modal-close-btn:hover {
+    color: #ffffff;
+}
+
+.analysis-modal-body {
+    padding: 18px 20px 20px;
+}
+
+.analysis-summary {
+    margin-bottom: 16px;
+    color: #e4e4e4;
+    font-size: 14px;
+}
+
+.analysis-modal-loading,
+.analysis-modal-error {
+    margin: 0;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.analysis-modal-loading {
+    color: #d9d9d9;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.analysis-loader-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 150px;
+}
+
+.analysis-loader-spinner {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 4px solid rgba(0, 255, 136, 0.2);
+    border-top-color: #00ff88;
+    animation: analysisSpin 0.9s linear infinite;
+}
+
+
+.analysis-modal-error {
+    background: #2e0a0a;
+    color: #ff7777;
+    border: 1px solid #ff4444;
+}
+
+.analysis-section {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #1d1d1d;
+    background: #0c0c0c;
+}
+
+.analysis-section h4 {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.analysis-section ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.analysis-section li {
+    margin-bottom: 6px;
+    color: #d6d6d6;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.analysis-section li:last-child {
+    margin-bottom: 0;
+}
+
+.analysis-section-healthy h4 {
+    color: #00ff88;
+}
+
+.analysis-section-unhealthy h4 {
+    color: #ff7a7a;
+}
+
+.analysis-section-improve h4 {
+    color: #ffd166;
+}
+
+.analysis-section-healthy {
+    background: rgba(0, 255, 136, 0.07);
+    border-color: rgba(0, 255, 136, 0.28);
+}
+
+.analysis-section-unhealthy {
+    background: rgba(255, 68, 68, 0.08);
+    border-color: rgba(255, 68, 68, 0.3);
+}
+
+.analysis-section-improve {
+    background: rgba(255, 209, 102, 0.1);
+    border-color: rgba(255, 209, 102, 0.34);
+}
+
+@keyframes analysisSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 
 .table-container {
     width: 100%;
@@ -353,5 +548,14 @@ tbody tr:hover {
     /* Make table scrollable on mobile */
     .table-container {
         -webkit-overflow-scrolling: touch;
+    }
+
+    .analysis-modal {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .analysis-modal-content {
+        max-height: min(90vh, 760px);
     }
 }

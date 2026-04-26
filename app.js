@@ -29,12 +29,18 @@ const backBtn = document.getElementById('backBtn');
 const mealsTableBody = document.getElementById('mealsTableBody');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const noMoreMeals = document.getElementById('noMoreMeals');
+const analyzeMealsBtn = document.getElementById('analyzeMealsBtn');
+const analysisModal = document.getElementById('analysisModal');
+const analysisModalBackdrop = document.getElementById('analysisModalBackdrop');
+const analysisModalCloseBtn = document.getElementById('analysisModalCloseBtn');
+const analysisModalBody = document.getElementById('analysisModalBody');
 
 // Meals pagination
 let currentPage = 0;
 const mealsPerPage = 100;
 let isLoading = false;
 let hasMoreMeals = true;
+let isAnalyzingMeals = false;
 
 function initializeSupabase() {
     if (typeof supabase === 'undefined') {
@@ -230,6 +236,10 @@ function initializeRouting() {
     signOutBtn.addEventListener('click', signOut);
     viewMealsBtn.addEventListener('click', showMealsView);
     backBtn.addEventListener('click', showHomeView);
+    analyzeMealsBtn.addEventListener('click', analyzeMeals);
+    analysisModalCloseBtn.addEventListener('click', closeAnalysisModal);
+    analysisModalBackdrop.addEventListener('click', closeAnalysisModal);
+    document.addEventListener('keydown', handleModalEscapeKey);
 }
 
 function formatDateTime(dateString) {
@@ -395,6 +405,168 @@ function setupLazyLoading() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+}
+
+function setAnalyzeButtonLoading(isLoadingState) {
+    isAnalyzingMeals = isLoadingState;
+    analyzeMealsBtn.disabled = isLoadingState;
+    analyzeMealsBtn.textContent = isLoadingState ? 'Analyzing...' : 'Analyze Meals';
+}
+
+function closeAnalysisModal() {
+    analysisModal.style.display = 'none';
+    analysisModal.setAttribute('aria-hidden', 'true');
+}
+
+function openAnalysisModal() {
+    analysisModal.style.display = 'flex';
+    analysisModal.setAttribute('aria-hidden', 'false');
+}
+
+function renderAnalysisLoading() {
+    analysisModalBody.replaceChildren();
+
+    const loadingWrap = document.createElement('div');
+    loadingWrap.className = 'analysis-loader-wrap';
+
+    const spinner = document.createElement('div');
+    spinner.className = 'analysis-loader-spinner';
+    spinner.setAttribute('aria-hidden', 'true');
+
+    const loadingText = document.createElement('p');
+    loadingText.className = 'analysis-modal-loading';
+    loadingText.textContent = 'Analyzing your last 30 days of meals ...';
+    loadingWrap.appendChild(spinner);
+    loadingWrap.appendChild(loadingText);
+    analysisModalBody.appendChild(loadingWrap);
+}
+
+function renderAnalysisError(errorMessage) {
+    analysisModalBody.replaceChildren();
+    const errorText = document.createElement('p');
+    errorText.className = 'analysis-modal-error';
+    errorText.textContent = errorMessage;
+    analysisModalBody.appendChild(errorText);
+}
+
+function createAnalysisSection(title, items, className) {
+    const section = document.createElement('section');
+    section.className = `analysis-section ${className}`;
+
+    const sectionTitle = document.createElement('h4');
+    sectionTitle.textContent = title;
+    section.appendChild(sectionTitle);
+
+    const list = document.createElement('ul');
+    const normalizedItems = Array.isArray(items) && items.length > 0
+        ? items
+        : ['No insights available yet.'];
+
+    normalizedItems.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+    });
+
+    section.appendChild(list);
+    return section;
+}
+
+function renderAnalysisResults(data) {
+    analysisModalBody.replaceChildren();
+
+    const summary = document.createElement('p');
+    summary.className = 'analysis-summary';
+    summary.textContent = `${data.meals_analyzed} meals analyzed for ${data.period}.`;
+    analysisModalBody.appendChild(summary);
+
+    analysisModalBody.appendChild(createAnalysisSection('Healthy patterns', data.healthy_patterns, 'analysis-section-healthy'));
+    analysisModalBody.appendChild(createAnalysisSection('Unhealthy patterns', data.unhealthy_patterns, 'analysis-section-unhealthy'));
+    analysisModalBody.appendChild(createAnalysisSection('What to improve', data.what_to_improve, 'analysis-section-improve'));
+}
+
+function validateAnalysisPayload(payload) {
+    if (!payload || typeof payload !== 'object') {
+        throw new Error('Unexpected response from analysis service.');
+    }
+
+    if (typeof payload.meals_analyzed !== 'number' || typeof payload.period !== 'string') {
+        throw new Error('Analysis response is incomplete.');
+    }
+
+    return {
+        meals_analyzed: payload.meals_analyzed,
+        period: payload.period,
+        healthy_patterns: Array.isArray(payload.healthy_patterns) ? payload.healthy_patterns : [],
+        unhealthy_patterns: Array.isArray(payload.unhealthy_patterns) ? payload.unhealthy_patterns : [],
+        what_to_improve: Array.isArray(payload.what_to_improve) ? payload.what_to_improve : []
+    };
+}
+
+async function fetchMealsAnalysis() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const accessToken = session?.access_token;
+    if (!accessToken) {
+        throw new Error('Your session expired. Please sign in again.');
+    }
+
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/analyze-meals`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+        }
+    });
+
+    let parsedBody = null;
+    try {
+        parsedBody = await response.json();
+    } catch (_error) {
+        parsedBody = null;
+    }
+
+    if (!response.ok) {
+        const errorMessage = parsedBody && typeof parsedBody.error === 'string'
+            ? parsedBody.error
+            : 'Failed to analyze meals. Please try again.';
+        throw new Error(errorMessage);
+    }
+
+    return validateAnalysisPayload(parsedBody);
+}
+
+async function analyzeMeals() {
+    if (isAnalyzingMeals) {
+        return;
+    }
+
+    if (!(await requireAllowedSession())) {
+        return;
+    }
+
+    setAnalyzeButtonLoading(true);
+    openAnalysisModal();
+    renderAnalysisLoading();
+
+    try {
+        const analysisData = await fetchMealsAnalysis();
+        renderAnalysisResults(analysisData);
+    } catch (error) {
+        console.error('Error analyzing meals:', error);
+        renderAnalysisError(error.message || 'Failed to analyze meals. Please try again.');
+    } finally {
+        setAnalyzeButtonLoading(false);
+    }
+}
+
+function handleModalEscapeKey(event) {
+    if (event.key !== 'Escape') {
+        return;
+    }
+
+    if (analysisModal.style.display !== 'none') {
+        closeAnalysisModal();
+    }
 }
 
 mealForm.addEventListener('submit', async (e) => {
