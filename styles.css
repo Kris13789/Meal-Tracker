@@ -384,45 +384,116 @@ textarea:focus {
 
 .analysis-section {
     margin-top: 14px;
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #1d1d1d;
-    background: #0c0c0c;
+    padding: 0;
+    border: none;
+    background: transparent;
 }
 
 .analysis-section h4 {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-size: 14px;
     font-weight: 600;
 }
 
 .analysis-section ul {
     margin: 0;
-    padding-left: 18px;
+    padding: 0;
 }
 
 .analysis-section li {
-    margin-bottom: 6px;
-    color: #d6d6d6;
-    font-size: 14px;
-    line-height: 1.4;
     list-style: none;
-    padding: 10px;
+    margin-bottom: 10px;
+    padding: 12px;
     border-radius: 6px;
-    border: 1px solid #1d1d1d;
-    background: rgba(255, 255, 255, 0.02);
 }
 
 .analysis-section li:last-child {
     margin-bottom: 0;
 }
 
-.analysis-pattern-line {
-    margin: 0;
+.analysis-pattern-card-healthy {
+    border: 1px solid rgba(0, 255, 136, 0.5);
+    background: rgba(0, 255, 136, 0.08);
 }
 
-.analysis-pattern-line + .analysis-pattern-line {
-    margin-top: 6px;
+.analysis-pattern-card-unhealthy {
+    border: 1px solid rgba(255, 68, 68, 0.55);
+    background: rgba(255, 68, 68, 0.08);
+}
+
+.analysis-pattern-title {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    font-weight: 700;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.analysis-pattern-emoji {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.analysis-pattern-emoji-healthy {
+    color: #00ff88;
+}
+
+.analysis-pattern-emoji-unhealthy {
+    color: #ff5f5f;
+}
+
+.analysis-pattern-title-healthy {
+    color: #00ff88;
+}
+
+.analysis-pattern-title-unhealthy {
+    color: #ff5f5f;
+}
+
+.analysis-pattern-arrow {
+    margin: 5px 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.analysis-pattern-card-healthy .analysis-pattern-arrow {
+    color: #00ff88;
+}
+
+.analysis-pattern-card-unhealthy .analysis-pattern-arrow {
+    color: #ff5f5f;
+}
+
+.analysis-pattern-text {
+    margin: 0;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.analysis-solution-icon {
+    color: #ffde59;
+    margin-right: 6px;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: text-bottom;
+}
+
+.analysis-icon-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 .analysis-section-healthy h4 {
@@ -434,13 +505,13 @@ textarea:focus {
 }
 
 .analysis-section-healthy {
-    background: rgba(0, 255, 136, 0.07);
-    border-color: rgba(0, 255, 136, 0.28);
+    background: transparent;
+    border-color: transparent;
 }
 
 .analysis-section-unhealthy {
-    background: rgba(255, 68, 68, 0.08);
-    border-color: rgba(255, 68, 68, 0.3);
+    background: transparent;
+    border-color: transparent;
 }
 
 @keyframes analysisSpin {

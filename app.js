@@ -449,9 +449,64 @@ function renderAnalysisError(errorMessage) {
     analysisModalBody.appendChild(errorText);
 }
 
+function createFlatAnalysisIcon(iconType, className) {
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.classList.add(className);
+
+    const createNode = (tagName, attrs = {}) => {
+        const node = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+        Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+        return node;
+    };
+
+    if (iconType === 'happy' || iconType === 'sad') {
+        icon.appendChild(createNode('circle', {
+            cx: '12',
+            cy: '12',
+            r: '9',
+            fill: 'none',
+            stroke: 'currentColor',
+            'stroke-width': '1.8',
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+        }));
+        icon.appendChild(createNode('circle', { cx: '9', cy: '10', r: '0.9', fill: 'currentColor' }));
+        icon.appendChild(createNode('circle', { cx: '15', cy: '10', r: '0.9', fill: 'currentColor' }));
+        icon.appendChild(createNode('path', {
+            d: iconType === 'happy' ? 'M7.5 14.5 Q12 18 16.5 14.5' : 'M7.5 16.5 Q12 13 16.5 16.5',
+            fill: 'none',
+            stroke: 'currentColor',
+            'stroke-width': '1.8',
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+        }));
+    } else if (iconType === 'bulb') {
+        icon.appendChild(createNode('path', {
+            d: 'M12 3.5c-3.3 0-6 2.7-6 6 0 2.1 1.1 3.9 2.8 5 0.7 0.4 1.2 1.1 1.2 1.9V17h3.9v-0.6c0-0.8 0.5-1.5 1.2-1.9 1.7-1 2.8-2.9 2.8-5 0-3.3-2.7-6-6-6z',
+            fill: 'none',
+            stroke: 'currentColor',
+            'stroke-width': '1.8',
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+        }));
+        icon.appendChild(createNode('path', {
+            d: 'M9.5 19h5M10.4 21h3.2',
+            fill: 'none',
+            stroke: 'currentColor',
+            'stroke-width': '1.8',
+            'stroke-linecap': 'round'
+        }));
+    }
+
+    return icon;
+}
+
 function createAnalysisSection(title, items, className) {
     const section = document.createElement('section');
     section.className = `analysis-section ${className}`;
+    const isHealthySection = className === 'analysis-section-healthy';
 
     const sectionTitle = document.createElement('h4');
     sectionTitle.textContent = title;
@@ -470,24 +525,61 @@ function createAnalysisSection(title, items, className) {
 
     normalizedItems.forEach((item) => {
         const li = document.createElement('li');
+        li.className = `analysis-pattern-card ${
+            isHealthySection ? 'analysis-pattern-card-healthy' : 'analysis-pattern-card-unhealthy'
+        }`;
 
         const tendencyLine = document.createElement('p');
-        tendencyLine.className = 'analysis-pattern-line';
-        tendencyLine.textContent = `Tendency: ${item.tendency}`;
+        tendencyLine.className = `analysis-pattern-title ${
+            isHealthySection ? 'analysis-pattern-title-healthy' : 'analysis-pattern-title-unhealthy'
+        }`;
+
+        const patternIcon = document.createElement('span');
+        patternIcon.className = `analysis-pattern-emoji ${
+            isHealthySection ? 'analysis-pattern-emoji-healthy' : 'analysis-pattern-emoji-unhealthy'
+        }`;
+        patternIcon.appendChild(createFlatAnalysisIcon(isHealthySection ? 'happy' : 'sad', 'analysis-icon-svg'));
+
+        const tendencyText = document.createElement('span');
+        tendencyText.textContent = item.tendency;
+
+        tendencyLine.appendChild(patternIcon);
+        tendencyLine.appendChild(tendencyText);
+
+        const consequenceArrow = document.createElement('p');
+        consequenceArrow.className = 'analysis-pattern-arrow';
+        consequenceArrow.textContent = '↓';
 
         const consequenceLine = document.createElement('p');
-        consequenceLine.className = 'analysis-pattern-line';
-        consequenceLine.textContent = `Consequence: ${item.consequence}`;
-
-        const actionLine = document.createElement('p');
-        actionLine.className = 'analysis-pattern-line';
-        actionLine.textContent = item.keep_it_up
-            ? `Keep it up: ${item.keep_it_up}`
-            : `Solution: ${item.solution}`;
+        consequenceLine.className = 'analysis-pattern-text';
+        consequenceLine.textContent = item.consequence;
 
         li.appendChild(tendencyLine);
+        li.appendChild(consequenceArrow);
         li.appendChild(consequenceLine);
-        li.appendChild(actionLine);
+
+        if (!isHealthySection && item.solution) {
+            const solutionArrow = document.createElement('p');
+            solutionArrow.className = 'analysis-pattern-arrow';
+            solutionArrow.textContent = '↓';
+
+            const solutionLine = document.createElement('p');
+            solutionLine.className = 'analysis-pattern-text';
+
+            const solutionIcon = document.createElement('span');
+            solutionIcon.className = 'analysis-solution-icon';
+            solutionIcon.appendChild(createFlatAnalysisIcon('bulb', 'analysis-icon-svg'));
+
+            const solutionText = document.createElement('span');
+            solutionText.textContent = item.solution;
+
+            solutionLine.appendChild(solutionIcon);
+            solutionLine.appendChild(solutionText);
+
+            li.appendChild(solutionArrow);
+            li.appendChild(solutionLine);
+        }
+
         list.appendChild(li);
     });
 
