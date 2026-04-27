@@ -529,6 +529,12 @@ function createAnalysisSection(title, items, className) {
             isHealthySection ? 'analysis-pattern-card-healthy' : 'analysis-pattern-card-unhealthy'
         }`;
 
+        const iconColumn = document.createElement('div');
+        iconColumn.className = 'analysis-pattern-icon-column';
+
+        const contentColumn = document.createElement('div');
+        contentColumn.className = 'analysis-pattern-content-column';
+
         const tendencyLine = document.createElement('p');
         tendencyLine.className = `analysis-pattern-title ${
             isHealthySection ? 'analysis-pattern-title-healthy' : 'analysis-pattern-title-unhealthy'
@@ -539,12 +545,8 @@ function createAnalysisSection(title, items, className) {
             isHealthySection ? 'analysis-pattern-emoji-healthy' : 'analysis-pattern-emoji-unhealthy'
         }`;
         patternIcon.appendChild(createFlatAnalysisIcon(isHealthySection ? 'happy' : 'sad', 'analysis-icon-svg'));
-
-        const tendencyText = document.createElement('span');
-        tendencyText.textContent = item.tendency;
-
-        tendencyLine.appendChild(patternIcon);
-        tendencyLine.appendChild(tendencyText);
+        iconColumn.appendChild(patternIcon);
+        tendencyLine.textContent = item.tendency;
 
         const consequenceArrow = document.createElement('p');
         consequenceArrow.className = 'analysis-pattern-arrow';
@@ -554,9 +556,9 @@ function createAnalysisSection(title, items, className) {
         consequenceLine.className = 'analysis-pattern-text';
         consequenceLine.textContent = item.consequence;
 
-        li.appendChild(tendencyLine);
-        li.appendChild(consequenceArrow);
-        li.appendChild(consequenceLine);
+        contentColumn.appendChild(tendencyLine);
+        contentColumn.appendChild(consequenceArrow);
+        contentColumn.appendChild(consequenceLine);
 
         if (!isHealthySection && item.solution) {
             const solutionArrow = document.createElement('p');
@@ -570,16 +572,15 @@ function createAnalysisSection(title, items, className) {
             solutionIcon.className = 'analysis-solution-icon';
             solutionIcon.appendChild(createFlatAnalysisIcon('bulb', 'analysis-icon-svg'));
 
-            const solutionText = document.createElement('span');
-            solutionText.textContent = item.solution;
-
-            solutionLine.appendChild(solutionIcon);
-            solutionLine.appendChild(solutionText);
-
-            li.appendChild(solutionArrow);
-            li.appendChild(solutionLine);
+            iconColumn.classList.add('analysis-pattern-icon-column-has-solution');
+            iconColumn.appendChild(solutionIcon);
+            contentColumn.appendChild(solutionArrow);
+            contentColumn.appendChild(solutionLine);
+            solutionLine.textContent = item.solution;
         }
 
+        li.appendChild(iconColumn);
+        li.appendChild(contentColumn);
         list.appendChild(li);
     });
 
