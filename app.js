@@ -517,6 +517,7 @@ function createAnalysisSection(title, items, className) {
 
     if (normalizedItems.length === 0) {
         const li = document.createElement('li');
+        li.className = 'analysis-item';
         li.textContent = 'No insights available yet.';
         list.appendChild(li);
         section.appendChild(list);
@@ -525,62 +526,53 @@ function createAnalysisSection(title, items, className) {
 
     normalizedItems.forEach((item) => {
         const li = document.createElement('li');
-        li.className = `analysis-pattern-card ${
+        li.className = 'analysis-item';
+
+        const card = document.createElement('div');
+        card.className = `analysis-pattern-card ${
             isHealthySection ? 'analysis-pattern-card-healthy' : 'analysis-pattern-card-unhealthy'
         }`;
 
-        const iconColumn = document.createElement('div');
-        iconColumn.className = 'analysis-pattern-icon-column';
-
-        const contentColumn = document.createElement('div');
-        contentColumn.className = 'analysis-pattern-content-column';
-
-        const tendencyLine = document.createElement('p');
-        tendencyLine.className = `analysis-pattern-title ${
-            isHealthySection ? 'analysis-pattern-title-healthy' : 'analysis-pattern-title-unhealthy'
+        const iconWrap = document.createElement('span');
+        iconWrap.className = `analysis-pattern-icon ${
+            isHealthySection ? 'analysis-pattern-icon-healthy' : 'analysis-pattern-icon-unhealthy'
         }`;
+        iconWrap.appendChild(createFlatAnalysisIcon(isHealthySection ? 'happy' : 'sad', 'analysis-icon-svg'));
 
-        const patternIcon = document.createElement('span');
-        patternIcon.className = `analysis-pattern-emoji ${
-            isHealthySection ? 'analysis-pattern-emoji-healthy' : 'analysis-pattern-emoji-unhealthy'
-        }`;
-        patternIcon.appendChild(createFlatAnalysisIcon(isHealthySection ? 'happy' : 'sad', 'analysis-icon-svg'));
-        iconColumn.appendChild(patternIcon);
-        tendencyLine.textContent = item.tendency;
+        const content = document.createElement('div');
+        content.className = 'analysis-pattern-content';
 
-        const consequenceArrow = document.createElement('p');
-        consequenceArrow.className = 'analysis-pattern-arrow';
-        consequenceArrow.textContent = '↓';
+        const tendencyEl = document.createElement('p');
+        tendencyEl.className = 'analysis-pattern-title';
+        tendencyEl.textContent = item.tendency;
 
-        const consequenceLine = document.createElement('p');
-        consequenceLine.className = 'analysis-pattern-text';
-        consequenceLine.textContent = item.consequence;
+        const consequenceEl = document.createElement('p');
+        consequenceEl.className = 'analysis-pattern-text';
+        consequenceEl.textContent = item.consequence;
 
-        contentColumn.appendChild(tendencyLine);
-        contentColumn.appendChild(consequenceArrow);
-        contentColumn.appendChild(consequenceLine);
+        content.appendChild(tendencyEl);
+        content.appendChild(consequenceEl);
 
         if (!isHealthySection && item.solution) {
-            const solutionArrow = document.createElement('p');
-            solutionArrow.className = 'analysis-pattern-arrow';
-            solutionArrow.textContent = '↓';
-
-            const solutionLine = document.createElement('p');
-            solutionLine.className = 'analysis-pattern-text';
+            const solutionBox = document.createElement('div');
+            solutionBox.className = 'analysis-solution-box';
 
             const solutionIcon = document.createElement('span');
             solutionIcon.className = 'analysis-solution-icon';
             solutionIcon.appendChild(createFlatAnalysisIcon('bulb', 'analysis-icon-svg'));
 
-            iconColumn.classList.add('analysis-pattern-icon-column-has-solution');
-            iconColumn.appendChild(solutionIcon);
-            contentColumn.appendChild(solutionArrow);
-            contentColumn.appendChild(solutionLine);
-            solutionLine.textContent = item.solution;
+            const solutionText = document.createElement('p');
+            solutionText.textContent = item.solution;
+
+            solutionBox.appendChild(solutionIcon);
+            solutionBox.appendChild(solutionText);
+            content.appendChild(solutionBox);
         }
 
-        li.appendChild(iconColumn);
-        li.appendChild(contentColumn);
+        card.appendChild(iconWrap);
+        card.appendChild(content);
+        li.appendChild(card);
+
         list.appendChild(li);
     });
 
